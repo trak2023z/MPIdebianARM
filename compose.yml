@@ -1,0 +1,30 @@
+services:
+    worker:
+        image: trak2023z/mpi-node:latest
+        networks:
+          - main-network
+        volumes:
+          - type: bind
+            source: ./workdir/
+            target: /home/user/mpi/
+    master:
+        depends_on:
+          - worker
+        image: trak2023z/mpi-master:latest
+        environment:
+            MASTER_HOSTNAME: "master"
+            WORKER_HOSTNAME: "worker"
+        networks:
+          - main-network
+        ports:
+          - target: 22
+            host_ip: localhost
+            published: 22
+            protocol: tcp
+        volumes:
+          - type: bind
+            source: ./workdir/
+            target: /home/user/mpi/
+
+networks:
+    main-network:
